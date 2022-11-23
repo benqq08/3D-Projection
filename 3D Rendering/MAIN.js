@@ -7,11 +7,9 @@ var context = canvas.getContext('2d');
 
 var Cam = {
     FOV: 35,
- 
     X:0,
     Y:0,
     Z:0,
- 
     XDIR:0,
     YDIR:0,
     ZDIR:0,
