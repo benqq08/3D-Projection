@@ -37,6 +37,7 @@ function project(X,Y,Z,X2,Y2,Z2){
     
     let x2 = (Math.sin(Cam.XDIR) * (X2+Cam.X)) + ((Math.cos(Cam.XDIR) * (Z2+Cam.Z)) * -1)
     let y2 = (((Math.cos(Cam.XDIR) * (X2+Cam.X)) + (Math.sin(Cam.XDIR) * (Z2+Cam.Z))) * Math.cos(Cam.YDIR)) + ((Y2+Cam.Y) * Math.sin(Cam.YDIR))
+    let z2 = (((Math.sin(Cam.XDIR) * (X2+Cam.X)) + (Math.sin(Cam.XDIR) * (Z2+Cam.Z))) * Math.cos(Cam.YDIR)) + ((Y2+Cam.Y) * Math.cos(Cam.YDIR))
 
     drawTo(x,y,x2,y2) //i am going to kill myself
 }
