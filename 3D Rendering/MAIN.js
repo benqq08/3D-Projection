@@ -1,4 +1,4 @@
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  ///The matt shaker give me the matt shaker man! yeah pull that shirt up! shake that ass! yeah thats some matt ass right there///
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  
@@ -33,7 +33,8 @@ function drawTo(sx,sy,fx,fy){
 function project(X,Y,Z,X2,Y2,Z2){
     let x = (Math.sin(Cam.XDIR) * (X+Cam.X)) + ((Math.cos(Cam.XDIR) * (Z+Cam.Z)) * -1)
     let y = (((Math.cos(Cam.XDIR) * (X+Cam.X)) + (Math.sin(Cam.XDIR) * (Z+Cam.Z))) * Math.cos(Cam.YDIR)) + ((Y+Cam.Y) * Math.sin(Cam.YDIR))
-
+    let z = (((Math.sin(Cam.XDIR) * (X+Cam.X)) + (Math.sin(Cam.XDIR) * (Z+Cam.Z))) * Math.cos(Cam.YDIR)) + ((Y+Cam.Y) * Math.cos(Cam.YDIR))
+    
     let x2 = (Math.sin(Cam.XDIR) * (X2+Cam.X)) + ((Math.cos(Cam.XDIR) * (Z2+Cam.Z)) * -1)
     let y2 = (((Math.cos(Cam.XDIR) * (X2+Cam.X)) + (Math.sin(Cam.XDIR) * (Z2+Cam.Z))) * Math.cos(Cam.YDIR)) + ((Y2+Cam.Y) * Math.sin(Cam.YDIR))
 
