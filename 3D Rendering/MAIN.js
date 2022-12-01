@@ -61,7 +61,7 @@ function loop() {
     //inputs.YSP = lerp(inputs.YSP,inputs.Y,.1)
 
     inputs.XSP += .063
-    inputs.YSP += .042
+    inputs.YSP += .043
 
     if (inputs.DOWN==true){
         Cam.X += (inputs.XSP-inputs.X)*2
