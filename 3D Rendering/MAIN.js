@@ -1,4 +1,4 @@
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  ///The matt shaker give me the matt shaker man! yeah pull that shirt up! shake that ass! yeah thats some matt ass right there///
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  
@@ -6,7 +6,7 @@ var canvas = document.getElementById('game');
 var context = canvas.getContext('2d');
 
 var Cam = {
-    FOV: 35,
+    FOV: 70,
     X:0,
     Y:0,
     Z:0,
@@ -20,7 +20,47 @@ var inputs = {
     XSP:0,
     YSP:0,
     DOWN:false,
+
+    W: false,
+    A: false,
+    S: false,
+    D: false,
 }
+
+
+
+
+let x3 = 0
+let y3 = 0
+let z3 = 0
+
+
+function rot(x,y,dir){
+    let ret = []
+    ret.push((x*Math.cos(dir))+(y*Math.sin(dir)))
+    ret.push((y*Math.cos(dir))-(x*Math.sin(dir)))
+
+    return ret
+}
+
+function rot2(x,y,z,xdir,ydir,zdir){
+    let v1 = rot(x,y,0-zdir)
+    x3 = v1[0]
+    y3 = v1[1]
+
+    let v2 = rot(x3,z,0-ydir)
+    x3 = v2[0]
+    z3 = v2[1]
+
+    let v3 = rot(z3,y3,xdir)
+    z3 = v3[0]
+    y3 = v3[1]
+
+    return [x3,y3,z3]
+}
+
+console.log(rot2(15,15,15,15,15,15))
+
 function lerp(a,b,c){
     return a+(b-a)*c
 }
@@ -30,17 +70,48 @@ function drawTo(sx,sy,fx,fy){
         context.fillRect(lerp(sx,fx,i/dist)+500,lerp(sy,fy,i/dist)+500,5,5)
     }
 }
-function project(X,Y,Z,X2,Y2,Z2){
-    let x = (Math.sin(Cam.XDIR) * (X+Cam.X)) + ((Math.cos(Cam.XDIR) * (Z+Cam.Z)) * -1)
-    let y = (((Math.cos(Cam.XDIR) * (X+Cam.X)) + (Math.sin(Cam.XDIR) * (Z+Cam.Z))) * Math.cos(Cam.YDIR)) + ((Y+Cam.Y) * Math.sin(Cam.YDIR))
-    let z = (((Math.sin(Cam.XDIR) * (X+Cam.X)) + (Math.sin(Cam.XDIR) * (Z+Cam.Z))) * Math.cos(Cam.YDIR)) + ((Y+Cam.Y) * Math.cos(Cam.YDIR))
-    
-    let x2 = (Math.sin(Cam.XDIR) * (X2+Cam.X)) + ((Math.cos(Cam.XDIR) * (Z2+Cam.Z)) * -1)
-    let y2 = (((Math.cos(Cam.XDIR) * (X2+Cam.X)) + (Math.sin(Cam.XDIR) * (Z2+Cam.Z))) * Math.cos(Cam.YDIR)) + ((Y2+Cam.Y) * Math.sin(Cam.YDIR))
-    let z2 = (((Math.sin(Cam.XDIR) * (X2+Cam.X)) + (Math.sin(Cam.XDIR) * (Z2+Cam.Z))) * Math.cos(Cam.YDIR)) + ((Y2+Cam.Y) * Math.cos(Cam.YDIR))
 
-    drawTo(x,y,x2,y2) //i am going to kill myself
+function project(rX,rY,rZ,rX2,rY2,rZ2,xdir,ydir,zdir,dist){
+
+    const X = rX + Cam.X
+    const Y = rY + Cam.Y
+    const Z = rZ + Cam.Z
+    const X2 = rX2 + Cam.X
+    const Y2 = rY2 + Cam.Y
+    const Z2 = rZ2 + Cam.Z
+
+    let finlv1 = rot2(X,Y,Z,xdir,ydir,zdir)
+    let m1 = 240 / ((finlv1[2] + dist) * Math.tan(Cam.FOV/2))
+    const RRx = finlv1[0]*m1
+    const RRy = finlv1[1]*m1
+
+    let finlv2 = rot2(X2,Y2,Z2,xdir,ydir,zdir)
+    let m2 = 240 / ((finlv2[2] + dist) * Math.tan(Cam.FOV/2))
+
+    const RRx2 = finlv2[0]*m2
+    const RRy2 = finlv2[1]*m2
+
+    drawTo(RRx,RRy,RRx2,RRy2)
+
+
 }
+
+function voxel(xx,yy,zz,size){
+    project(-1+xx,-1+yy,-1+zz,1+xx,-1+yy,-1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project(-1+xx,1+yy,-1+zz,1+xx,1+yy,-1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project(-1+xx,1+yy,1+zz,1+xx,1+yy,1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project(-1+xx,-1+yy,1+zz,1+xx,-1+yy,1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project(-1+xx,-1+yy,-1+zz,-1+xx+xx,1+yy,-1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project(1+xx,-1+yy,-1+zz,1+xx,1+yy,-1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project(-1+xx,-1+yy,1+zz,-1+xx,1+yy,1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project(1+xx,-1+yy,1+zz,1+xx,1+yy,1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project(-1+xx,-1+yy,-1+zz,-1+xx,-1+yy,1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project(1+xx,-1+yy,-1+zz,1+xx,-1+yy,1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project(1+xx,1+yy,-1+zz,1+xx,1+yy,1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project(-1+xx,1+yy,-1+zz,-1+xx,1+yy,1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+}
+
+
 document.addEventListener("mousemove", () => {
     inputs.X = event.clientX/100
     inputs.Y = event.clientY/100
@@ -52,54 +123,64 @@ document.addEventListener("mouseup", () => {
     inputs.DOWN = false
 });
 
+
+
+
+document.addEventListener('keydown', function(e) {
+    if (e.which === 87 ) {
+        inputs.W=true
+    }
+    if (e.which === 65 ) {
+        inputs.A=true
+    }
+    if (e.which === 83 ) {
+        inputs.S=true
+    }
+    if (e.which === 68 ) {
+        inputs.D=true
+    }
+});
+document.addEventListener('keyup', function(e) {
+    if (e.which === 87 ) {
+        inputs.W=false
+    }
+    if (e.which === 65 ) {
+        inputs.A=false
+    }
+    if (e.which === 83 ) {
+        inputs.S=false
+    }
+    if (e.which === 68 ) {
+        inputs.D=false
+    }
+});
+
+
 function loop() {
     context.fillStyle = `rgb(5,5,15)`
     context.fillRect(0,0,1000,1000)
     context.fillStyle = `rgb(200,200,205)`
 
-    //inputs.XSP = lerp(inputs.XSP,inputs.X,.1)
-    //inputs.YSP = lerp(inputs.YSP,inputs.Y,.1)
+    inputs.XSP = lerp(inputs.XSP,inputs.X,.1)
+    inputs.YSP = lerp(inputs.YSP,inputs.Y,.1)
 
-    inputs.XSP += .063
-    inputs.YSP += .043
+
 
     if (inputs.DOWN==true){
-        Cam.X += (inputs.XSP-inputs.X)*2
-        Cam.Y += (inputs.YSP-inputs.Y)*2
-    }
-
-        Cam.XDIR = inputs.XSP
-        Cam.YDIR = inputs.YSP
-    
-   /*
-    for(i=0;i<Points.length;i++){
-        let newInd = i+1
-        if ((i+1) >= Points.length){
-            newInd = 0
+        if (inputs.W==true){
+            Cam.X += 1
+        }
+        if (inputs.S==true){
+            Cam.X -= 1
         }
     }
-    */
-    project(-50,-50,-50,-50,50,-50);
-    project(-50,50,-50,50,50,-50);
-    project(50,50,-50,50,-50,-50);
-    project(50,-50,-50,-50,-50,-50);
 
-    project(-50,-50,50,-50,50,50);
-    project(-50,50,50,50,50,50);
-    project(50,50,50,50,-50,50);
-    project(50,-50,50,-50,-50,50);
+    Cam.YDIR = inputs.XSP
+    Cam.XDIR = inputs.YSP
 
-    project(-50,-50,-50,-50,-50,50);
-    project(50,-50,-50,50,-50,50);
-    project(50,50,-50,50,50,50);
-    project(-50,50,-50,-50,50,50);
- 
-    context.fillStyle = `rgb(80,255,80)`
-    project(0,10,0,0,110,0)
-    context.fillStyle = `rgb(255,80,80)`
-    project(10,0,0,110,0,0)
-    context.fillStyle = `rgb(80,80,255)`
-    project(0,0,10,0,0,110)
+    voxel(15,0,0,5);
+
+
 
     requestAnimationFrame(loop);
 };
