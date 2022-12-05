@@ -1,7 +1,5 @@
- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- ///The matt shaker give me the matt shaker man! yeah pull that shirt up! shake that ass! yeah thats some matt ass right there///
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- 
+//hi :)
+
 var canvas = document.getElementById('game');
 var context = canvas.getContext('2d');
 
@@ -59,9 +57,6 @@ function rot2(x,y,z,xdir,ydir,zdir){
 
     return [x3,y3,z3]
 }
-
-console.log(rot2(15,15,15,15,15,15))
-
 function lerp(a,b,c){
     return a+(b-a)*c
 }
@@ -73,13 +68,14 @@ function drawTo(sx,sy,fx,fy){
 }
 
 function project(rX,rY,rZ,rX2,rY2,rZ2,xdir,ydir,zdir,dist){
-
     const X = rX + Cam.X
     const Y = rY + Cam.Y
     const Z = rZ + Cam.Z
     const X2 = rX2 + Cam.X
     const Y2 = rY2 + Cam.Y
     const Z2 = rZ2 + Cam.Z
+
+
 
     let finlv1 = rot2(X,Y,Z,xdir,ydir,zdir)
     let m1 = 240 / ((finlv1[2] + dist) * Math.tan(Cam.FOV/2))
@@ -88,6 +84,10 @@ function project(rX,rY,rZ,rX2,rY2,rZ2,xdir,ydir,zdir,dist){
 
     let finlv2 = rot2(X2,Y2,Z2,xdir,ydir,zdir)
     let m2 = 240 / ((finlv2[2] + dist) * Math.tan(Cam.FOV/2))
+
+    if (m2 < 0 || m1 < 0){
+        return
+    }
 
     const RRx2 = finlv2[0]*m2
     const RRy2 = finlv2[1]*m2
@@ -102,7 +102,7 @@ function voxel(xx,yy,zz,size){
     project((-1)+xx,(1)+yy,(-1)+zz,(1)+xx,(1)+yy,(-1)+zz       ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
     project((-1)+xx,(1)+yy,(1)+zz,(1)+xx,(1)+yy,(1)+zz         ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
     project((-1)+xx,(-1)+yy,(1)+zz,(1)+xx,(-1)+yy,(1)+zz       ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
-    project((-1)+xx,(-1)+yy,(-1)+zz,(-1)+xx,(1)+yy,(-1)+zz  ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project((-1)+xx,(-1)+yy,(-1)+zz,(-1)+xx,(1)+yy,(-1)+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
     project((1)+xx,(-1)+yy,(-1)+zz,(1)+xx,(1)+yy,(-1)+zz       ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
     project((-1)+xx,(-1)+yy,(1)+zz,(-1)+xx,(1)+yy,(1)+zz       ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
     project((1)+xx,(-1)+yy,(1)+zz,(1)+xx,(1)+yy,(1)+zz         ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
@@ -125,9 +125,12 @@ document.addEventListener("mouseup", () => {
     inputs.DOWN = false
 });
 
+/*
+canvas.requestPointerLock = canvas.requestPointerLock ||
+                            canvas.mozRequestPointerLock;
 
-
-
+canvas.requestPointerLock()
+*/
 document.addEventListener('keydown', function(e) {
     if (e.which === 87 ) {
         inputs.W=true
@@ -169,7 +172,16 @@ function loop() {
     if (inputs.DOWN==true){
         inputs.ZSP = lerp(inputs.ZSP,inputs.X,.04)
     }
-
+    
+    if (inputs.W==true){
+        Cam.X += Math.cos(Cam.YDIR-90)/5
+        Cam.Y -= Math.sin(Cam.XDIR)/5
+    }
+    if (inputs.S==true){
+        Cam.X -= Math.cos(Cam.YDIR-90)/5
+        Cam.Y += Math.sin(Cam.XDIR)/5
+    }
+    
 
     Cam.YDIR = inputs.XSP
     Cam.XDIR = inputs.YSP
@@ -183,7 +195,6 @@ function loop() {
     context.fillStyle = `rgb(220,100,100)`
     project(.2,0,0,2,0,0,Cam.XDIR,Cam.YDIR,Cam.ZDIR,5)
 
-
     requestAnimationFrame(loop);
 };
 
@@ -193,3 +204,4 @@ requestAnimationFrame(loop)
 
 
 
+//bye :(
