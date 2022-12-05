@@ -29,10 +29,6 @@ var inputs = {
 
 
 
-let x3 = 0
-let y3 = 0
-let z3 = 0
-
 
 function rot(x,y,dir){
     let ret = []
@@ -43,6 +39,11 @@ function rot(x,y,dir){
 }
 
 function rot2(x,y,z,xdir,ydir,zdir){
+    
+    let x3 = 0
+    let y3 = 0
+    let z3 = 0
+    
     let v1 = rot(x,y,0-zdir)
     x3 = v1[0]
     y3 = v1[1]
