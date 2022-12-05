@@ -1,4 +1,4 @@
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  ///The matt shaker give me the matt shaker man! yeah pull that shirt up! shake that ass! yeah thats some matt ass right there///
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  
@@ -19,6 +19,7 @@ var inputs = {
     Y:0,
     XSP:0,
     YSP:0,
+    ZSP:0,
     DOWN:false,
 
     W: false,
@@ -97,19 +98,20 @@ function project(rX,rY,rZ,rX2,rY2,rZ2,xdir,ydir,zdir,dist){
 }
 
 function voxel(xx,yy,zz,size){
-    project(-1+xx,-1+yy,-1+zz,1+xx,-1+yy,-1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
-    project(-1+xx,1+yy,-1+zz,1+xx,1+yy,-1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
-    project(-1+xx,1+yy,1+zz,1+xx,1+yy,1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
-    project(-1+xx,-1+yy,1+zz,1+xx,-1+yy,1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
-    project(-1+xx,-1+yy,-1+zz,-1+xx+xx,1+yy,-1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
-    project(1+xx,-1+yy,-1+zz,1+xx,1+yy,-1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
-    project(-1+xx,-1+yy,1+zz,-1+xx,1+yy,1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
-    project(1+xx,-1+yy,1+zz,1+xx,1+yy,1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
-    project(-1+xx,-1+yy,-1+zz,-1+xx,-1+yy,1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
-    project(1+xx,-1+yy,-1+zz,1+xx,-1+yy,1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
-    project(1+xx,1+yy,-1+zz,1+xx,1+yy,1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
-    project(-1+xx,1+yy,-1+zz,-1+xx,1+yy,1+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project((-1)+xx,(-1)+yy,(-1)+zz,(1)+xx,(-1)+yy,(-1)+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project((-1)+xx,(1)+yy,(-1)+zz,(1)+xx,(1)+yy,(-1)+zz       ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project((-1)+xx,(1)+yy,(1)+zz,(1)+xx,(1)+yy,(1)+zz         ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project((-1)+xx,(-1)+yy,(1)+zz,(1)+xx,(-1)+yy,(1)+zz       ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project((-1)+xx,(-1)+yy,(-1)+zz,(-1)+xx,(1)+yy,(-1)+zz  ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project((1)+xx,(-1)+yy,(-1)+zz,(1)+xx,(1)+yy,(-1)+zz       ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project((-1)+xx,(-1)+yy,(1)+zz,(-1)+xx,(1)+yy,(1)+zz       ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project((1)+xx,(-1)+yy,(1)+zz,(1)+xx,(1)+yy,(1)+zz         ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project((-1)+xx,(-1)+yy,(-1)+zz,(-1)+xx,(-1)+yy,(1)+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project((1)+xx,(-1)+yy,(-1)+zz,(1)+xx,(-1)+yy,(1)+zz       ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project((1)+xx,(1)+yy,(-1)+zz,(1)+xx,(1)+yy,(1)+zz         ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
+    project((-1)+xx,(1)+yy,(-1)+zz,(-1)+xx,(1)+yy,(1)+zz       ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
 }
+
 
 
 document.addEventListener("mousemove", () => {
@@ -161,25 +163,25 @@ function loop() {
     context.fillRect(0,0,1000,1000)
     context.fillStyle = `rgb(200,200,205)`
 
-    inputs.XSP = lerp(inputs.XSP,inputs.X,.1)
+
     inputs.YSP = lerp(inputs.YSP,inputs.Y,.1)
-
-
-
+    inputs.XSP = lerp(inputs.XSP,inputs.X,.1)
     if (inputs.DOWN==true){
-        if (inputs.W==true){
-            Cam.X += 1
-        }
-        if (inputs.S==true){
-            Cam.X -= 1
-        }
+        inputs.ZSP = lerp(inputs.ZSP,inputs.X,.04)
     }
+
 
     Cam.YDIR = inputs.XSP
     Cam.XDIR = inputs.YSP
+    Cam.ZDIR = inputs.ZSP
+    voxel(0,0,0,5);
 
-    voxel(15,0,0,5);
-
+    context.fillStyle = `rgb(100,220,100)`
+    project(0,.2,0,0,2,0,Cam.XDIR,Cam.YDIR,Cam.ZDIR,5)
+    context.fillStyle = `rgb(100,100,220)`
+    project(0,0,.2,0,0,2,Cam.XDIR,Cam.YDIR,Cam.ZDIR,5)
+    context.fillStyle = `rgb(220,100,100)`
+    project(.2,0,0,2,0,0,Cam.XDIR,Cam.YDIR,Cam.ZDIR,5)
 
 
     requestAnimationFrame(loop);
@@ -187,4 +189,7 @@ function loop() {
 
 
 requestAnimationFrame(loop)
+
+
+
 
