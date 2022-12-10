@@ -4,7 +4,7 @@ var canvas = document.getElementById('game');
 var context = canvas.getContext('2d');
 
 var Cam = {
-    FOV: .5,
+    FOV: .5, //fix
     X:0,
     Y:0,
     Z:0,
