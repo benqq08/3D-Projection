@@ -32,21 +32,18 @@ var inputs = {
 }
  
 let ClVoxel = false
+let voxCol = [100,100,100]
 var VOXELS = []
 var SCREENVOXELS = []
  
-//imgs
-/*
-const line = new Image();
-const timer = new Image();
-const comp = new Image();
-const source = new Image();
-line.src = "https://static.wikia.nocookie.net/minecraft/images/a/af/Redstone_Dust.png/revision/latest?cb=20200826004502"
-timer.src = "https://static.wikia.nocookie.net/minecraft_gamepedia/images/f/f0/Redstone_Repeater_%28S%29_JE5_BE2.png/revision/latest?cb=20200317204852"
-comp.src = "https://static.wikia.nocookie.net/minecraft_gamepedia/images/1/1b/Subtracting_Redstone_Comparator_%28S%29_JE5.png/revision/latest?cb=20200923135231"
-source.src = "https://static.wikia.nocookie.net/minecraft_gamepedia/images/7/75/Redstone_Torch_JE4.png/revision/latest?cb=20200317204859"
-*/
- 
+
+let Gate = new Image();
+Gate.src = "file://s014lss01/Studenthome$/KSS/986883/Documents/comp%2011/3D-Projection-main/3D%20Rendering/Key.png"
+
+function print(val){
+    console.log(val)
+}
+
 function max(val,max){
     var xx = val
     if (xx > max){
@@ -171,7 +168,7 @@ let vox = "Line"
 document.addEventListener("mousedown", () => {
     inputs.MD = true
     if (inputs.Y < 825){
-        VOXELS.push([(Math.floor(-Cam.X/2)*2),(Math.floor(-Cam.Y/2)*2),(Math.floor(-Cam.Z/2)*2),5,vox])
+        VOXELS.push([(Math.floor(-Cam.X/2)*2),(Math.floor(-Cam.Y/2)*2),(Math.floor(-Cam.Z/2)*2),5,vox,false])
     }
     console.log(inputs.Y)
  
@@ -219,21 +216,76 @@ document.addEventListener('keydown', function(e) {
         inputs.E=true
     }
     if (e.which === 70 ) {
-        console.log(vox)
         if (vox=="Line"){
-            vox="Comp"
-        }
-        else if (vox=="Comp"){
             vox="Timer"
+            voxCol = [150,175,150]
         }
         else if (vox=="Timer"){
             vox="Source"
+            voxCol = [100,0,0]
         }
         else if (vox=="Source"){
+            vox="Or"
+            voxCol = [100,255,100]
+        }
+        else if (vox=="Or"){
+            vox="And"
+            voxCol = [255,100,100]
+        }
+        else if (vox=="And"){
+            vox="Xor"
+            voxCol = [25,255,25]
+        }
+        else if (vox=="Xor"){
+            vox="Xand"
+            voxCol = [255,25,25]
+        }
+        else if (vox=="Xand"){
+            vox="Not"
+            voxCol = [35,35,255]
+        }
+        else if (vox=="Not"){
+            vox="Switch"
+            voxCol = [255,76,207]
+        }
+        else if (vox=="Switch"){
             vox="Line"
+            voxCol = [100,100,100]
         }
     }
+    /*
+        if (vox[4]=="Line"){
+            context.fillStyle = `rgb(100,100,100)`
+        }
+        else if (vox[4]=="Timer"){
+            context.fillStyle = `rgb(150,175,150)`
+        }
+        else if (vox[4]=="Source"){
+            context.fillStyle = `rgb(100,0,0)`
+        }
+
+        else if (vox[4]=="Or"){
+            context.fillStyle = `rgb(100,255,100)`
+        }
+        else if (vox[4]=="And"){
+            context.fillStyle = `rgb(255,100,100)`
+        }
+
+        else if (vox[4]=="Xor"){
+            context.fillStyle = `rgb(25,255,25)`
+        }
+        else if (vox[4]=="Xand"){
+            context.fillStyle = `rgb(255,25,25)`
+        }
+
+        else if (vox[4]=="Not"){
+            context.fillStyle = `rgb(35,35,255)`
+        }
+    */
+
+
 });
+
 document.addEventListener('keyup', function(e) {
     if (e.which === 87 ) {
         inputs.W=false
@@ -328,14 +380,53 @@ function loop() {
             context.fillStyle = `rgb(100,100,100)`
         }
         else if (vox[4]=="Timer"){
-            context.fillStyle = `rgb(100,100,150)`
-        }
-        else if (vox[4]=="Comp"){
-            context.fillStyle = `rgb(100,255,100)`
+            context.fillStyle = `rgb(150,175,150)`
         }
         else if (vox[4]=="Source"){
+            context.fillStyle = `rgb(100,0,0)`
+        }
+
+        else if (vox[4]=="Or"){
+            context.fillStyle = `rgb(100,255,100)`
+        }
+        else if (vox[4]=="And"){
             context.fillStyle = `rgb(255,100,100)`
         }
+
+        else if (vox[4]=="Xor"){
+            context.fillStyle = `rgb(25,255,25)`
+        }
+        else if (vox[4]=="Xand"){
+            context.fillStyle = `rgb(255,25,25)`
+        }
+
+        else if (vox[4]=="Not"){
+            context.fillStyle = `rgb(35,35,255)`
+        }
+        
+        else if (vox[4]=="Switch"){
+            context.fillStyle = `rgb(255,76,207)`
+        }
+
+            for(let indx = 0; indx<VOXELS.length; indx++){
+                if (i!=indx && vox[4]=="Line"){
+                    const newvox=VOXELS[indx]
+                    print(vox[5])
+                    if (newvox[5]==true || newvox[4]=="Source"){
+                        
+                        if(Math.abs((newvox[0])-(vox[0])) <= 2){
+                            if(Math.abs((newvox[1])-(vox[1])) <= 2){
+                                if(Math.abs((newvox[2])-(vox[2])) <= 2){
+                                    context.fillStyle = `rgb(255,255,255)`
+                                    vox[5]=true
+                                    newvox[5]=true
+                                }
+                            }    
+                        }
+                    }
+                }
+            }
+
         voxel(vox[0],vox[1],vox[2],vox[3],1)
        
     }  
@@ -356,12 +447,12 @@ function loop() {
     context.fillRect(0,825,1000,1000)
  
  
-    context.fillStyle = `rgb(150,150,150)`
+    context.fillStyle = `rgb(${voxCol[0]},${voxCol[1]},${voxCol[2]})`
  
  
     context.font = "50px Arial";
-    context.fillText("Voxel Mode:" + vox,35,900)
-   
+    context.fillText("Voxel Mode: " + vox,150,950)
+    context.drawImage(Gate,-200,500,750,550)
     requestAnimationFrame(loop);
 };
  
@@ -373,4 +464,3 @@ requestAnimationFrame(loop)
  
 //bye :(
  
-
