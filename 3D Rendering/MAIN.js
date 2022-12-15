@@ -91,7 +91,7 @@ function lerp(a,b,c){
     return a+(b-a)*c
 }
 function drawTo(sx,sy,fx,fy){
-    const dist = (Math.abs(fx-sx)+Math.abs(fy-sy))/2
+    const dist = (Math.abs(fx-sx)+Math.abs(fy-sy))
     for (let i=0;i<dist;i++){
         context.fillRect(lerp(sx,fx,i/dist)+500,lerp(sy,fy,i/dist)+500,5,5)
     }
@@ -137,6 +137,14 @@ function project(rX,rY,rZ,rX2,rY2,rZ2,xdir,ydir,zdir,dist){
     return [RRx,RRy]
  
 }
+
+function removeItemOnce(arr, value) {
+    var index = arr.indexOf(value);
+    if (index > -1) {
+      arr.splice(index, 1);
+    }
+    return arr;
+  }
  
 function voxel(xx,yy,zz,size,scale){
     project((-1*scale)+xx,(-1*scale)+yy,(-1*scale)+zz,(1*scale)+xx,(-1*scale)+yy,(-1*scale)+zz     ,Cam.XDIR,Cam.YDIR,Cam.ZDIR,size)
@@ -168,7 +176,7 @@ let vox = "Line"
 document.addEventListener("mousedown", () => {
     inputs.MD = true
     if (inputs.Y < 825){
-        VOXELS.push([(Math.floor(-Cam.X/2)*2),(Math.floor(-Cam.Y/2)*2),(Math.floor(-Cam.Z/2)*2),5,vox,false])
+        VOXELS.push([(Math.floor(-Cam.X/2)*2),(Math.floor(-Cam.Y/2)*2),(Math.floor(-Cam.Z/2)*2),5,vox,false,0])
     }
     console.log(inputs.Y)
  
@@ -214,6 +222,15 @@ document.addEventListener('keydown', function(e) {
     }
     if (e.which === 69 ) {
         inputs.E=true
+    }
+    if (e.which === 90 ) {
+        for (let i=0; i<VOXELS.length;i++){
+            const vox = VOXELS[i]
+            if (vox[0]==(Math.floor(-Cam.X/2)*2) && vox[1]==(Math.floor(-Cam.Y/2)*2) && vox[2]==(Math.floor(-Cam.Z/2)*2)){
+                console.log("ccok")
+                removeItemOnce(VOXELS,vox)
+            }
+        }
     }
     if (e.which === 70 ) {
         if (vox=="Line"){
@@ -376,6 +393,8 @@ function loop() {
  
     for(let i=0;i<VOXELS.length;i++){
         const vox = VOXELS[i]
+        vox[6]-= .5
+        vox[5] = false
         if (vox[4]=="Line"){
             context.fillStyle = `rgb(100,100,100)`
         }
@@ -409,24 +428,52 @@ function loop() {
         }
 
             for(let indx = 0; indx<VOXELS.length; indx++){
-                if (i!=indx && vox[4]=="Line"){
+                if (i!=indx){
+                    if (vox[4]=="Line"){
+                        const newvox=VOXELS[indx]
+                    
+                        if (newvox[5]==true || newvox[4]=="Source"){
+                            
+                            if(Math.abs((newvox[0])-(vox[0])) <= 2){
+                                if(Math.abs((newvox[1])-(vox[1])) <= 2){
+                                    if(Math.abs((newvox[2])-(vox[2])) <= 2){
+                                        context.fillStyle = `rgb(255,255,255)`
+                                        vox[5]=true
+                                        newvox[5]=true
+                                    }
+                                }    
+                            }
+                        }
+                }
+                else if (vox[4]=="Timer"){
                     const newvox=VOXELS[indx]
-                    print(vox[5])
+                    
+                    vox[6] = max(vox[6],25)
+                    vox[6] = min(vox[6],-1)
+                    console.log(vox[6])
                     if (newvox[5]==true || newvox[4]=="Source"){
                         
                         if(Math.abs((newvox[0])-(vox[0])) <= 2){
                             if(Math.abs((newvox[1])-(vox[1])) <= 2){
                                 if(Math.abs((newvox[2])-(vox[2])) <= 2){
-                                    context.fillStyle = `rgb(255,255,255)`
-                                    vox[5]=true
-                                    newvox[5]=true
+                                    vox[6]+= 1
+                                    if (vox[6]>20){
+                                        context.fillStyle = `rgb(255,255,255)`
+                                        vox[5]=true
+                                        newvox[5]=true
+                                        
+                                    }
+                                    
                                 }
-                            }    
+
+                            }
+ 
                         }
+
                     }
                 }
             }
-
+        }
         voxel(vox[0],vox[1],vox[2],vox[3],1)
        
     }  
@@ -463,4 +510,4 @@ requestAnimationFrame(loop)
  
  
 //bye :(
- 
+
